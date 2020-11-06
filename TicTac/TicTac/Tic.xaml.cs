@@ -15,14 +15,14 @@ namespace TicTac
             Label[,] tic = new Label[3, 3];
             string l;
             Label lbl;
-            Button change, restart, man;
+            Button change, restart, own;
         public Tic()
         {
                 Grid();
                 stps = 0;
-                man.IsEnabled = true;
+                own.IsEnabled = true;
             }
-            //InitializeComponent();
+            
             void Grid()
             {
                 stps = 0;
@@ -50,12 +50,12 @@ namespace TicTac
                 restart.Clicked += Restart_Clicked;
                 grid.Children.Add(restart, 1, 3);
 
-                man = new Button
+                own = new Button
                 {
                     Text = "Выбрать первого игрока"
                 };
-                man.Clicked += Man_Clicked;
-                grid.Children.Add(man, 2, 3);
+			    own.Clicked += Own_Clicked;
+                grid.Children.Add(own, 2, 3);
 
                 for (int i = 0; i < 3; i++)
                 {
@@ -82,38 +82,39 @@ namespace TicTac
                 Content = grid;
             }
 
-            private void Restart_Clicked(object sender, EventArgs e)
+		private async void Own_Clicked(object sender, EventArgs e)
+		{
+            string choice = await DisplayActionSheet("Кто начинает?", "X", "0", "Выбирайте знак");
+
+            if (choice == "X")
+            {
+                chck = 2;
+                change.Text = "X";
+                own.IsEnabled = false;
+
+            }
+            else if (choice == "0")
+            {
+
+                chck = 1;
+                change.Text = "0";
+                own.IsEnabled = false;
+
+            }
+
+            else
+            {
+                own.IsEnabled = true;
+            }
+        }
+
+		private void Restart_Clicked(object sender, EventArgs e)
             {
                 Grid();
                 chck = 0;
                 stps = 0;
             }
 
-            private async void Man_Clicked(object sender, EventArgs e)
-            {
-                string choice = await DisplayActionSheet("Кто начинает?", "X", "0", "Выбирайте знак");
-
-                if (choice == "X")
-                {
-                    chck = 2;
-                    change.Text = "X";
-                    man.IsEnabled = false;
-
-                }
-                else if (choice == "0")
-                {
-
-                    chck = 1;
-                    change.Text = "0";
-                    man.IsEnabled = false;
-
-                }
-
-                else
-                {
-                    man.IsEnabled = true;
-                }
-            }
             private void Tap_Tapped(object sender, EventArgs e)
 
             {
@@ -290,16 +291,6 @@ namespace TicTac
                 }
 
             }
-            /*
-			grd = new Grid()
-			{
-				HeightRequest = 400
-			};
-			for (int i = 0; i < 3; i++)
-			{
-				grd.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-				grd.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-			}*/
 
         }
 	}
